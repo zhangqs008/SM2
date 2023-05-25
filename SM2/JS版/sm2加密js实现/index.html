@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Js 国密SM2加密测试</title>
+    <script src="./lib/crypto-js.js"></script>
+    <script src="./lib/sm2.js"></script>
+    <script src="./lib/jquery.min.js"></script>
+    <style type="text/css">
+        .main {
+            font-size: 14px;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        h3 {
+            font-size: 16px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid brown;
+        }
+
+        .td-left {
+            width: 120px;
+            text-align: right;
+        }
+
+        table {
+            width: 100%;
+        }
+        td{line-height: 32px;}
+        .input {
+            width: 99%;
+            border: 1px solid #ccc;
+            padding: 5px 5px;
+            outline: none;
+            border-radius: 3px;
+        }
+
+        .btn {
+            border: 0;
+            background-color: brown;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        ul {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        li {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        #output {
+            margin-top: 15px;
+
+        }
+
+        .cipher-item {
+            border: 1px dashed #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .plainText {
+            word-wrap: break-word
+        }
+
+        .encrypted {
+            word-wrap: break-word
+        }
+
+        a {
+            text-decoration: none;
+            color: brown
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <h3>国密SM2加密测试</h1>
+            <div class="toolbar">
+                <table>
+                    <tr>
+                        <td colspan="2" style="text-align: center;height: 40px;line-height: 40px;font-size: 16px;color: orangered;padding: 20px 0;">
+                            常见的渗透测试会将网站登录时密码使用明文传输视为风险。推荐使用国密算法或者RSA算法对密码进行加密传输。<br/><b
+                                style="color:red">此实例实现国密SM2算法加密，不实现解密，解密由后台程序完成（C#或Java）。</b>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-left"> SM2公钥：</td>
+                        <td>
+                            <input type="text" class="input"
+                                value="04F59485B23304990ED45E42521BE504D0DE358B9E4031A172EF48700071AF985A8EA8B12BB479E24152814EE61840932BFFF5B3B1657C9CF50A61756B1D901E1C"
+                                placeholder="请输SM2公钥" id="txtPubKey" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="td-left"> 待加密明文：</td>
+                        <td>
+                            <input type="text" class="input" value="123456" placeholder="请输入当前要加密的文本" id="input" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button class="btn" onclick="generateCipher()">加密</button>
+                            <button class="btn" onclick="clearCipher()">清空</button>
+                            <span style="color:gray;font-size: 12px;margin-left: 15px;"> 如需验证加密结果，可以在<a
+                                    href="https://the-x.cn/cryptography/Sm2.aspx"
+                                    target="_blank"> 在线国密SM2加密/解密 </a>输入私钥,尝试解密。</span>
+                        </td>
+                    </tr>
+
+                </table>
+                <ul id="output" style="font-size: 14px;">
+                </ul>
+
+            </div>
+
+
+            <script>
+                var index=1;
+                function generateCipher() {
+                    var pubkeyHex = $("#txtPubKey").val();
+                    var input = $('#input').val();
+                    //加密模式：0: C1C2C3、1: C1C3C2
+                    var encryptData = sm2Encrypt(input, pubkeyHex, 0);
+                    var item = "<li class='cipher-item'>";
+                    item += "<div class='plainText'>序号：第" + index + "次</div>";
+                    item += "<div class='plainText'>明文：" + input + "</div>";
+                    item += "<div class='encrypted'>密文：" + encryptData.toUpperCase() + "</div>";
+                    item += "</li>"
+                    $('#output').html($('#output').html() + item);
+                    index++;
+                }
+
+                function clearCipher() {
+                    $('#output').html("");
+                }
+            </script>
+    </div>
+</body>
+
+</html>
